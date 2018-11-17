@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">My expenses</string>
+    <string name="main_activity_name">All Tasks</string>
+    <string name="add_task_activity_name">Add a New Expense</string>
+
+    <!-- Strings for AddExpenseActivity -->
+    <string name="edit_expense_amount">Amount</string>
+    <string name="add_button">Add</string>
+    <string name="update_button">Update</string>
+    <string name="edit_expense_description">Describe your purchase description</string>
+    <string name="total_amount_description">Total spent amount is:</string>
+    <string name="delete_item_confirmation">Are you sure</string>
+    <string name="delete">yes</string>
+    <string name="cancel">no</string>
+    <string name="entery_date_hint">Date (Today\'s date by default)</string>
+
+</resources>

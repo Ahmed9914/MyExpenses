@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface ExpenseDao {
 
-    @Query("SELECT * FROM expense ORDER BY updated_at asc")
+    @Query("SELECT * FROM expense ORDER BY updated_at desc")
     LiveData<List<ExpenseEntity>> loadAllExpenses();
 
     @Insert

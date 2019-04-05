@@ -31,9 +31,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/entery_date_hint"
-        android:onClick="showDatePickerDialog"
-        android:editable="false"
-        android:inputType="date" />
+        android:clickable="true"
+        android:focusable="false"
+        android:onClick="showDatePickerDialog" />
 
     <!-- TextView and FrameLayout (which contains buttons) for Priority Selection -->
     <EditText

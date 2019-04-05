@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements ExpenseAdapter.It
             public void onClick(View view) {
                 // Create a new intent to start an AddExpenseActivity
                 Intent addTaskIntent = new Intent(MainActivity.this, AddExpenseActivity.class);
-                addTaskIntent.putExtra(AddExpenseActivity.EXTRA_EXPENSE_ID, AddExpenseActivity.EXTRA_EXPENSE_ID);
+                addTaskIntent.putExtra(AddExpenseActivity.EXTRA_EXPENSE_ID, AddExpenseActivity.DEFAULT_EXPENSE_ID);
                 startActivity(addTaskIntent);
             }
         });

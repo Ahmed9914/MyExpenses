@@ -50,7 +50,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     // Extra for the expense ID to be received after rotation
     public static final String INSTANCE_EXPENSE_ID = "instanceExpenseId";
     // Constant for default expense id to be used when not in update mode
-    private static final int DEFAULT_EXPENSE_ID = -1;
+    public static final int DEFAULT_EXPENSE_ID = -1;
     // Constant for logging
     private static final String TAG = AddExpenseActivity.class.getSimpleName();
     // Fields for views
@@ -79,27 +79,28 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_EXPENSE_ID)) {
-            mButton.setText(R.string.update_button);
-            if (mExpenseId == DEFAULT_EXPENSE_ID) {
-                // populate the UI
-                mExpenseId = intent.getIntExtra(EXTRA_EXPENSE_ID, DEFAULT_EXPENSE_ID);
-                // COMPLETED (9) Remove the logging and the call to loadExpenseById, this is done in the ViewModel now
-                // COMPLETED (10) Declare a AddExpenseViewModelFactory using mDb and mExpenseId
-                AddExpenseViewModelFactory factory = new AddExpenseViewModelFactory(this.getApplication(), mExpenseId);
-                // COMPLETED (11) Declare a AddExpenseViewModel variable and initialize it by calling ViewModelProviders.of
-                // for that use the factory created above AddExpenseViewModel
-                viewModel = ViewModelProviders.of(this, factory).get(AddExpenseViewModel.class);
-
-                // COMPLETED (12) Observe the LiveData object in the ViewModel. Use it also when removing the observer
-                viewModel.getExpense().observe(this, new Observer<ExpenseEntity>() {
-                    @Override
-                    public void onChanged(@Nullable ExpenseEntity expenseEntity) {
-                        viewModel.getExpense().removeObserver(this);
-                        populateUI(expenseEntity);
-                    }
-                });
+            mExpenseId = intent.getIntExtra(EXTRA_EXPENSE_ID, DEFAULT_EXPENSE_ID);
+            if (mExpenseId != DEFAULT_EXPENSE_ID) {
+                mButton.setText(R.string.update_button);
             }
-        }
+
+            // populate the UI
+            // COMPLETED (9) Remove the logging and the call to loadExpenseById, this is done in the ViewModel now
+            // COMPLETED (10) Declare a AddExpenseViewModelFactory using mDb and mExpenseId
+            AddExpenseViewModelFactory factory = new AddExpenseViewModelFactory(this.getApplication(), mExpenseId);
+            // COMPLETED (11) Declare a AddExpenseViewModel variable and initialize it by calling ViewModelProviders.of
+            // for that use the factory created above AddExpenseViewModel
+            viewModel = ViewModelProviders.of(this, factory).get(AddExpenseViewModel.class);
+
+            // COMPLETED (12) Observe the LiveData object in the ViewModel. Use it also when removing the observer
+            viewModel.getExpense().observe(this, new Observer<ExpenseEntity>() {
+                @Override
+                public void onChanged(@Nullable ExpenseEntity expenseEntity) {
+                    viewModel.getExpense().removeObserver(this);
+                    populateUI(expenseEntity);
+                }
+            });
+            }
     }
 
     @Override
@@ -145,17 +146,14 @@ public class AddExpenseActivity extends AppCompatActivity {
         String description = "";
         Double amount = 0.0;
         Date date;
-        if (descriptionText.getText().toString() != null &&
-                !descriptionText.getText().toString().isEmpty()) {
+        if (!descriptionText.getText().toString().isEmpty()) {
             description = descriptionText.getText().toString();
         }
-        if (mAmountText.getText().toString() != null &&
-                !mAmountText.getText().toString().isEmpty() &&
+        if (!mAmountText.getText().toString().isEmpty() &&
                 Double.parseDouble(mAmountText.getText().toString()) > 0) {
             amount = Double.parseDouble(mAmountText.getText().toString());
         }
-        if (dateText.getText().toString() != null &&
-                !dateText.getText().toString().isEmpty()){
+        if (!dateText.getText().toString().isEmpty()){
             try {
                 date = DateFormat.getDateInstance().parse(dateText.getText().toString());
             } catch (ParseException e){
@@ -167,8 +165,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         if (!description.equals("") && amount > 0 && date != null) {
             final ExpenseEntity expense = new ExpenseEntity(description, amount, date);
-            if (expense != null) {
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
                         if (mExpenseId == DEFAULT_EXPENSE_ID) {
@@ -182,7 +179,6 @@ public class AddExpenseActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-            }
         }
     }
 
@@ -204,7 +200,10 @@ public class AddExpenseActivity extends AppCompatActivity {
             int day = c.get(Calendar.DAY_OF_MONTH);
 
             // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            if (getActivity() != null) {
+                return new DatePickerDialog(getActivity(), this, year, month, day);
+            }
+            return null;
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
